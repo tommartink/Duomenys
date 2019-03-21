@@ -10,10 +10,10 @@ namespace Duomenu_laboratorinis
     {
         static void NotMain(string[] args)
         {
-            Student[] students = new Student[1000];
+            Student[] students = new Student[1];
 
             String check = "t";
-            int counter = 0;
+            int counter = 1;
 
             while (check.Equals("t"))
             {
@@ -29,6 +29,7 @@ namespace Duomenu_laboratorinis
                 counter++;
                 Console.WriteLine("Įveskite 't' jei norite ivesti dar viena studenta");
                 check = Console.ReadLine().ToLower();
+                if (check.Equals("t")) Array.Resize(ref students, counter + 1);
             }
 
             Console.WriteLine("Įveskite 'v' jei norite kad pazymis butu skaiciuojamas pagal vidurki, iveskite kita klavisa jeigu paga mediana");
