@@ -8,16 +8,12 @@ namespace Duomenu_laboratorinis
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-              class Program
-        {
             static void Main(string[] args)
             {
-                List<Student> students = new List<Student>();
-                Student[] my_d = new Student[1];
+            List<Student> students = new List<Student>();
                 String check = "t";
                 int counter = 0;
+
                 while (check.Equals("t"))
                 {
                     String name;
@@ -33,14 +29,21 @@ namespace Duomenu_laboratorinis
                     Console.WriteLine("Įveskite 't' jei norite ivesti dar viena studenta");
                     check = Console.ReadLine().ToLower();
                 }
-                Console.WriteLine("Vardas" + "\t\t" + "Pavarde" + "\t\t" + "Galutinis (vid.)/Galutinis (Med.)");
-                Console.WriteLine("-----------------------------------------------------------------");
+            
+            Console.WriteLine("Įveskite 'v' jei norite kad pazymis butu skaiciuojamas pagal vidurki, iveskite kita klavisa jeigu paga mediana");
+            String taipne = Console.ReadLine();
+            bool flag = taipne.Equals("v");
+                if (flag) Console.WriteLine("{0,-15}{1,-15}{2,-10}", "Vardas", "Pavarde", "Galutinis (vid.)");
+
+                else Console.WriteLine("{0,-15}{1,-15}{2,-10}", "Vardas", "Pavarde", "Galutinis (med.)");
+            Console.WriteLine("----------------------------------------------");
 
                 for (int i = 0; i < students.Count; i++)
                 {
-                    students[i].WriteMyInfo();
+                if (flag) students[i].WriteMyInfoAvg();
+                else students[i].WriteMyInfoMed();
                 }
-
+                
             }
 
             class Student
@@ -57,14 +60,18 @@ namespace Duomenu_laboratorinis
                     this.name = name;
                     this.surname = surname;
                 }
-                public void WriteMyInfo()
+                public void WriteMyInfoAvg()
+            {
+                countEndmark();
+                Console.WriteLine("{0,-15}{1,-15}{2,-10}", name, surname, Math.Truncate(endmark * 100) / 100);
+            }
+                public void WriteMyInfoMed()
                 {
-                    countEndmark();
-                    countEndmarkMedian();
-                    // Console.WriteLine(name+ "\t\t"+ surname + "\t\t" + Math.Truncate(endmark * 100) / 100 + "\t" + Math.Truncate(endmarkMedian * 100) / 100);
 
-                    Console.WriteLine("{0,0}{1,20}{2,40}{3,50}", name, surname, Math.Truncate(endmark * 100) / 100, Math.Truncate(endmarkMedian * 100) / 100);
-                }
+                    countEndmarkMedian();
+                Console.WriteLine("{0,-15}{1,-15}{2,-10}", name, surname, Math.Truncate(endmarkMedian * 100) / 100);
+
+            }
                 private void countEndmark()
                 {
                     double average = homework.Count > 0 ? homework.Average() : 0.0;
@@ -91,6 +98,16 @@ namespace Duomenu_laboratorinis
                     endmarkMedian = median * 0.3 + egzam * 0.7;
                 }
                 public void setEgzam(double egzam) { this.egzam = egzam; }
+                public void generateGrades()
+            {
+                Random rnd = new Random();
+                egzam = rnd.Next(2,11);
+                int marks = rnd.Next(4, 8);
+                for(int i = 0; i <marks; i++)
+                {
+                    homework.Add(rnd.Next(2,11));
+                }
+            }
                 public void setHomework(String markline)
                 {
                     string[] list = markline.Split();
@@ -102,6 +119,5 @@ namespace Duomenu_laboratorinis
             }
 
         }
-    }
-    }
+
 }
