@@ -1,0 +1,2 @@
+# Duomenys
+Duomenuapdorojimas
