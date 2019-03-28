@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace Duomenu_laboratorinis
 {
@@ -30,8 +31,14 @@ namespace Duomenu_laboratorinis
                     {
                         String[] duomenys = eilute.Split(' ');
                         students.Add(new Student(duomenys[0],duomenys[1]));
-                        students[counter].setHomework(duomenys[2] + " " + duomenys[3] + " " + duomenys[4] + " " + duomenys[5] + " " + duomenys[6]);
-                        students[counter].setEgzam(Double.Parse(duomenys[7]));
+                        String homework = ""; 
+                        for(int i = 2; i < duomenys.Length - 1; i++)
+                        {
+                            homework += duomenys[i] + " ";
+                        }
+                        if(!homework.Equals(""))homework = homework.Substring(0,homework.Length - 1);
+                        students[counter].setHomework(homework);
+                        students[counter].setEgzam(Double.Parse(duomenys[duomenys.Length-1]));
                         counter++;
                     }
                 }
@@ -58,18 +65,15 @@ namespace Duomenu_laboratorinis
         }
             if (input.Equals("f") || input.Equals("r"))
             {
-                Console.WriteLine("Įveskite 'v' jei norite kad pazymis butu skaiciuojamas pagal vidurki, iveskite kita klavisa jeigu paga mediana");
-                String taipne = Console.ReadLine();
-                bool flag = taipne.Equals("v");
-                if (flag) Console.WriteLine("{0,-15}{1,-15}{2,-10}", "Vardas", "Pavarde", "Galutinis (vid.)");
+                IEnumerable <Student> orderbyname = students.OrderBy(p => p.getName());
+                Console.WriteLine("{0,-15}{1,-15}{2,-10}{3,-10}", "Vardas", "Pavarde", "Galutinis (vid.)","Galutinis (vid.)");
 
-                else Console.WriteLine("{0,-15}{1,-15}{2,-10}", "Vardas", "Pavarde", "Galutinis (med.)");
-                Console.WriteLine("----------------------------------------------");
+                
+                Console.WriteLine("----------------------------------------------------------");
 
-                for (int i = 0; i < students.Count; i++)
+                foreach (Student studenchik in orderbyname)
                 {
-                    if (flag) students[i].WriteMyInfoAvg();
-                    else students[i].WriteMyInfoMed();
+                    studenchik.WriteMyInfoAvg();
                 }
             }
             }
@@ -88,26 +92,32 @@ namespace Duomenu_laboratorinis
                     this.name = name;
                     this.surname = surname;
                 }
+            public String getName() { return name; }
                 public void WriteMyInfoAvg()
             {
                 countEndmark();
-                Console.WriteLine("{0,-15}{1,-15}{2,-10}", name, surname, Math.Truncate(endmark * 100) / 100);
+                countEndmarkMedian();
+                Console.WriteLine("{0,-15}{1,-15}{2,-16}{3,-10}", name, surname, Math.Truncate(endmark * 100) / 100, Math.Truncate(endmarkMedian * 100) / 100);
             }
-                public void WriteMyInfoMed()
-                {
 
-                    countEndmarkMedian();
-                Console.WriteLine("{0,-15}{1,-15}{2,-10}", name, surname, Math.Truncate(endmarkMedian * 100) / 100);
-
-            }
                 private void countEndmark()
                 {
+                if (homework.Count == 1 && homework[0] == 0)
+                {
+                    endmark = 0;
+                    return;
+                }
                     double average = homework.Count > 0 ? homework.Average() : 0.0;
                     endmark = average * 0.3 + egzam * 0.7;
                 }
                 private void countEndmarkMedian()
                 {
-                    var ds = homework;
+                if (homework.Count == 1 && homework[0] == 0)
+                {
+                    endmarkMedian = 0;
+                    return;
+                }
+                var ds = homework;
                     ds.Sort();
                     int count = 0;
                     foreach (double d in ds.ToList())
@@ -138,10 +148,16 @@ namespace Duomenu_laboratorinis
             }
                 public void setHomework(String markline)
                 {
+                if (markline.Equals(""))
+                {
+                    homework.Add(0);
+                    return;
+                }
                     string[] list = markline.Split();
                     for (int i = 0; i < list.Length; i++)
                     {
-                        homework.Add(double.Parse(list[i]));
+                    var numb = double.Parse(list[i]);
+                    homework.Add(numb);
                     }
                 }
             }
