@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,42 +9,69 @@ namespace Duomenu_laboratorinis
 {
     class Program
     {
-            static void Main(string[] args)
-            {
+        static void Main(string[] args)
+        {
             List<Student> students = new List<Student>();
-                String check = "t";
-                int counter = 0;
 
-                while (check.Equals("t"))
+            Console.WriteLine("Įveskite r jei norite duomenis vesti ranka arba f jei norite duomenis duoti iš failo");
+            String input = System.Console.ReadLine();
+
+            if (input.Equals("f"))
+            {
+                Console.WriteLine("Įrašykite pilną kelią iki failo ir jo pavadinimą.");
+                String location = System.Console.ReadLine();
+                StreamReader sr = new StreamReader(location, Encoding.GetEncoding(1257));
+                string headercheck = sr.ReadLine();
+                if (headercheck.Equals("Vardas Pavardė ND1 ND2 ND3 ND4 ND5 Egzaminas"))
                 {
-                    String name;
-                    Console.WriteLine("Įveskite studento Vardą");
-                    name = System.Console.ReadLine();
-                    Console.WriteLine("Įveskite studento Pavardę");
-                    students.Add(new Student(name, System.Console.ReadLine()));
-                    Console.WriteLine("Įveskite studento namų darbų pažymius");
-                    students[counter].setHomework(System.Console.ReadLine());
-                    Console.WriteLine("Įveskite studento egzamino pažymį");
-                    students[counter].setEgzam(Double.Parse(System.Console.ReadLine()));
-                    counter++;
-                    Console.WriteLine("Įveskite 't' jei norite ivesti dar viena studenta");
-                    check = Console.ReadLine().ToLower();
+                    String eilute;
+                    int counter = 0;
+                    while ((eilute = sr.ReadLine()) != null)
+                    {
+                        String[] duomenys = eilute.Split(' ');
+                        students.Add(new Student(duomenys[0],duomenys[1]));
+                        students[counter].setHomework(duomenys[2] + " " + duomenys[3] + " " + duomenys[4] + " " + duomenys[5] + " " + duomenys[6]);
+                        students[counter].setEgzam(Double.Parse(duomenys[7]));
+                        counter++;
+                    }
                 }
-            
-            Console.WriteLine("Įveskite 'v' jei norite kad pazymis butu skaiciuojamas pagal vidurki, iveskite kita klavisa jeigu paga mediana");
-            String taipne = Console.ReadLine();
-            bool flag = taipne.Equals("v");
+
+            }
+            if (input.Equals("r")) { 
+              String check = "t";
+            int counter = 0;
+            while (check.Equals("t")) 
+            {
+                String name;
+                Console.WriteLine("Įveskite studento Vardą");
+                name = System.Console.ReadLine();
+                Console.WriteLine("Įveskite studento Pavardę");
+                students.Add(new Student(name, System.Console.ReadLine()));
+                Console.WriteLine("Įveskite studento namų darbų pažymius");
+                students[counter].setHomework(System.Console.ReadLine());
+                Console.WriteLine("Įveskite studento egzamino pažymį");
+                students[counter].setEgzam(Double.Parse(System.Console.ReadLine()));
+                counter++;
+                Console.WriteLine("Įveskite 't' jei norite ivesti dar viena studenta");
+                check = Console.ReadLine().ToLower();
+            }
+        }
+            if (input.Equals("f") || input.Equals("r"))
+            {
+                Console.WriteLine("Įveskite 'v' jei norite kad pazymis butu skaiciuojamas pagal vidurki, iveskite kita klavisa jeigu paga mediana");
+                String taipne = Console.ReadLine();
+                bool flag = taipne.Equals("v");
                 if (flag) Console.WriteLine("{0,-15}{1,-15}{2,-10}", "Vardas", "Pavarde", "Galutinis (vid.)");
 
                 else Console.WriteLine("{0,-15}{1,-15}{2,-10}", "Vardas", "Pavarde", "Galutinis (med.)");
-            Console.WriteLine("----------------------------------------------");
+                Console.WriteLine("----------------------------------------------");
 
                 for (int i = 0; i < students.Count; i++)
                 {
-                if (flag) students[i].WriteMyInfoAvg();
-                else students[i].WriteMyInfoMed();
+                    if (flag) students[i].WriteMyInfoAvg();
+                    else students[i].WriteMyInfoMed();
                 }
-                
+            }
             }
 
             class Student
