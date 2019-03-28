@@ -81,21 +81,66 @@ namespace Duomenu_laboratorinis
         static private void readKeyboard()
         {
             String check = "t";
-            int counter = 0;
-            while (check.Equals("t"))
+            Boolean end = true;
+            while (end)
             {
-                String name;
-                Console.WriteLine("Įveskite studento Vardą");
-                name = System.Console.ReadLine();
-                Console.WriteLine("Įveskite studento Pavardę");
-                students.Add(new Student(name, System.Console.ReadLine()));
-                Console.WriteLine("Įveskite studento namų darbų pažymius");
-                students[counter].setHomework(System.Console.ReadLine());
-                Console.WriteLine("Įveskite studento egzamino pažymį");
-                students[counter].setEgzam(Double.Parse(System.Console.ReadLine()));
-                counter++;
-                Console.WriteLine("Įveskite 't' jei norite ivesti dar viena studenta");
-                check = Console.ReadLine().ToLower();
+                try
+                {
+                    while (check.Equals("t"))
+                    {
+                        Student candidate;
+                        String name;
+                        Console.WriteLine("Įveskite studento Vardą");
+                        name = System.Console.ReadLine();
+                        if (name.Equals(""))
+                        {
+                            Console.WriteLine("Studento vardas yra privalomas");
+                            continue;
+                        }
+                        Console.WriteLine("Įveskite studento Pavardę");
+                        String lastname = System.Console.ReadLine();
+                        if (lastname.Equals(""))
+                        {
+                            Console.WriteLine("Studento pavardė yra privaloma");
+                            continue;
+                        }
+                        candidate = new Student(name, lastname);
+                        try
+                        {
+                            Console.WriteLine("Įveskite studento namų darbų pažymius.(Pažymius atskirkite tarpais)");
+                            String homeworkline = System.Console.ReadLine();
+                            if (homeworkline.Equals(""))
+                            {
+                                Console.WriteLine("Studentas privalo būti įvygdęs bent viena namų darbą bandykite dar kartą.");
+                                continue;
+                            }
+                            candidate.setHomework(homeworkline);
+                        }
+                        catch (FormatException ex)
+                        {
+                            Console.WriteLine("Blogai įrašyti namų darbai bandykite dar kartą.");
+                            continue;
+                        }
+                        Console.WriteLine("Įveskite studento egzamino pažymį");
+                        try
+                        {
+                            string[] list = System.Console.ReadLine().Split();
+                            candidate.setEgzam(Double.Parse(list[0]));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Blogai įrašytas egzamino pažimys bandykite dar kartą");
+                            continue;
+                        }
+                        students.Add(candidate);
+                        Console.WriteLine("Įveskite 't' jei norite ivesti dar viena studenta");
+                        check = Console.ReadLine().ToLower();
+                    }
+                    end = false;
+                }
+                catch (Exception ex) {
+                    Console.WriteLine("Blogai įrašėte įraša bandykite dar kartą.");
+                }
             }
         }
 

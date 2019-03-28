@@ -63,7 +63,10 @@ namespace Duomenu_laboratorinis
             else median = homework[homework.Count / 2];
             endmarkMedian = median * 0.3 + egzam * 0.7;
         }
-        public void setEgzam(double egzam) { this.egzam = egzam; }
+        public void setEgzam(double egzam) {
+            if (egzam > 10 || egzam < 0) throw new Exception("Netinkamas pažimys");
+            this.egzam = egzam;
+        }
         public void generateGrades()
         {
             Random rnd = new Random();
@@ -85,6 +88,7 @@ namespace Duomenu_laboratorinis
             for (int i = 0; i < list.Length; i++)
             {
                 var numb = double.Parse(list[i]);
+                if (numb > 10 || numb < 0) throw new Exception("Netinkamas pažimys");
                 homework.Add(numb);
             }
         }
