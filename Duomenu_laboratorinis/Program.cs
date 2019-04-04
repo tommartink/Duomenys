@@ -51,9 +51,9 @@ namespace Duomenu_laboratorinis
                 Console.WriteLine("Įrašykite kiek studentų norite sugeneruoti");
                 String line = System.Console.ReadLine();
                 int countas = Int32.Parse(line);
+                    Random rnd = new Random();
                     for (int i = 1; i < countas+1 ;i++) {
-                        Console.WriteLine(i);
-                        students.Add(new Student(i));
+                        students.Add(new Student(i,rnd));
 
                     }
             }
