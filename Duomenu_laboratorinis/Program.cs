@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace Duomenu_laboratorinis
@@ -21,6 +22,8 @@ namespace Duomenu_laboratorinis
             Console.WriteLine("Įveskite r jei norite duomenis vesti ranka arba f jei norite duomenis duoti iš failo");
             Console.WriteLine("Įveskite rf jei norite prirašytu random reiksmių į failą");
             String input = System.Console.ReadLine();
+            bool yesno = false;
+            Stopwatch timer = new Stopwatch();
 
             if (input.Equals("f"))
             {
@@ -31,18 +34,22 @@ namespace Duomenu_laboratorinis
             }
             if (input.Equals("rf"))
             {
+                Console.WriteLine("Įveskite raidę t jei norite duomenis išsaugoti faile");
+                yesno = System.Console.ReadLine().Equals("t");
+                timer.Start();
                 randomFile();
             }
             if (input.Equals("f") || input.Equals("r")||input.Equals("rf"))
             {
                 printData();
-                Console.WriteLine("Įveskite raidę t jei norite duomenis išsaugoti faile");
-                if (System.Console.ReadLine().Equals("t"))
+                if (yesno)
                 {
                     FilePrinter print = new FilePrinter();
                   //  print.generateFile(students);
                     print.generateNamedFile(upper,"kietaiakiai");
                     print.generateNamedFile(lower,"nuskriaustukai");
+                    timer.Stop();
+                    Console.WriteLine("Užduotis įvykdyta per: " + timer.ElapsedMilliseconds + "ms");
                 }
             }
             }
