@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace Duomenu_laboratorinis
 {
@@ -16,6 +17,7 @@ namespace Duomenu_laboratorinis
 
 
             Console.WriteLine("Įveskite r jei norite duomenis vesti ranka arba f jei norite duomenis duoti iš failo");
+            Console.WriteLine("Įveskite rf jei norite prirašytu random reiksmių į failą");
             String input = System.Console.ReadLine();
 
             if (input.Equals("f"))
@@ -25,12 +27,44 @@ namespace Duomenu_laboratorinis
             if (input.Equals("r")) {
                 readKeyboard();
             }
-            if (input.Equals("f") || input.Equals("r"))
+            if (input.Equals("rf"))
+            {
+                randomFile();
+            }
+            if (input.Equals("f") || input.Equals("r")||input.Equals("rf"))
             {
                 printData();
+                Console.WriteLine("Įveskite raidę t jei norite duomenis išsaugoti faile");
+                if (System.Console.ReadLine().Equals("t"))
+                {
+                    FilePrinter print = new FilePrinter();
+                    print.generateFile(students);
+                }
             }
             }
+        static private void randomFile()
+        {
+            Boolean checker = true;
+            while (checker) { 
+            try
+            {
+                Console.WriteLine("Įrašykite kiek studentų norite sugeneruoti");
+                String line = System.Console.ReadLine();
+                int countas = Int32.Parse(line);
+                    for (int i = 1; i < countas+1 ;i++) {
+                        Console.WriteLine(i);
+                        students.Add(new Student(i));
 
+                    }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Įvėdėte ne skaičių bandykite dar kartą");
+                    continue;
+            }
+                checker = false;
+        }
+        }
         static private void readFile()
         {
             Boolean end = true;
@@ -40,13 +74,12 @@ namespace Duomenu_laboratorinis
                     Console.WriteLine("Įrašykite pilną kelią iki failo ir jo pavadinimą.");
                     String location = System.Console.ReadLine();
                     StreamReader sr = new StreamReader(location, Encoding.GetEncoding(1257));
-                    string headercheck = sr.ReadLine();
-                    if (headercheck.Equals("Vardas Pavardė ND1 ND2 ND3 ND4 ND5 Egzaminas"))
-                    {
+                    sr.ReadLine();
                         String eilute;
                         int counter = 0;
                         while ((eilute = sr.ReadLine()) != null)
                         {
+                            eilute = Regex.Replace(eilute, @"\s+", " ");
                             String[] duomenys = eilute.Split(' ');
                             students.Add(new Student(duomenys[0], duomenys[1]));
                             String homework = "";
@@ -59,7 +92,7 @@ namespace Duomenu_laboratorinis
                             students[counter].setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
                             counter++;
                         }
-                    }
+                    
                     end = false;
                 }
                 catch (FileNotFoundException ex)

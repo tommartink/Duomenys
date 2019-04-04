@@ -20,6 +20,12 @@ namespace Duomenu_laboratorinis
             this.name = name;
             this.surname = surname;
         }
+        public Student(int nr)
+        {
+            this.name = "Vardas" + nr.ToString();
+            this.surname = "Pavardė" + nr.ToString();
+            generateGrades(5);
+        }
         public String getName() { return name; }
         public void WriteMyInfoAvg()
         {
@@ -67,12 +73,11 @@ namespace Duomenu_laboratorinis
             if (egzam > 10 || egzam < 0) throw new Exception("Netinkamas pažimys");
             this.egzam = egzam;
         }
-        public void generateGrades()
+        public void generateGrades(int kiek)
         {
             Random rnd = new Random();
             egzam = rnd.Next(2, 11);
-            int marks = rnd.Next(4, 8);
-            for (int i = 0; i < marks; i++)
+            for (int i = 0; i < kiek; i++)
             {
                 homework.Add(rnd.Next(2, 11));
             }
@@ -92,5 +97,8 @@ namespace Duomenu_laboratorinis
                 homework.Add(numb);
             }
         }
+        public String getSurname() { return this.surname; }
+        public double getEgzam() { return this.egzam; }
+        public List<double> getHomework() { return this.homework; }
     }
 }
