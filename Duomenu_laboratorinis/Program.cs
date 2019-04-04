@@ -12,6 +12,8 @@ namespace Duomenu_laboratorinis
     class Program
     {
         static List<Student> students = new List<Student>();
+        static List<Student> upper = new List<Student>();
+        static List<Student> lower = new List<Student>();
         static void Main(string[] args)
         {
 
@@ -38,7 +40,9 @@ namespace Duomenu_laboratorinis
                 if (System.Console.ReadLine().Equals("t"))
                 {
                     FilePrinter print = new FilePrinter();
-                    print.generateFile(students);
+                  //  print.generateFile(students);
+                    print.generateNamedFile(upper,"kietaiakiai");
+                    print.generateNamedFile(lower,"nuskriaustukai");
                 }
             }
             }
@@ -188,6 +192,8 @@ namespace Duomenu_laboratorinis
             foreach (Student studenchik in orderbyname)
             {
                 studenchik.WriteMyInfoAvg();
+                if (studenchik.getEndmark() < 5.0f) lower.Add(studenchik);
+                else upper.Add(studenchik);
             }
         }
 

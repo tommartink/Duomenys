@@ -99,5 +99,6 @@ namespace Duomenu_laboratorinis
         public String getSurname() { return this.surname; }
         public double getEgzam() { return this.egzam; }
         public List<double> getHomework() { return this.homework; }
+        public double getEndmark() { return this.endmark; }
     }
 }
