@@ -29,8 +29,8 @@ namespace Duomenu_laboratorinis
             String input = System.Console.ReadLine();
             if (input.Equals("t"))
             {
-                ListTest();
-                students = new List<Student>();
+                ListTest(); // testas
+                students = new List<Student>(); // nunulinami duomenys
                 upper = new List<Student>();
                 lower = new List<Student>();
 
