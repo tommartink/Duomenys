@@ -30,13 +30,17 @@ namespace Duomenu_laboratorinis
             if (input.Equals("t"))
             {
                 ListTest(); // testas
-                students = null; // nunulinami sarasai
+                students = null; // nunulinami list sarasai
                 upper = null;
                 lower = null;
                 LinkedListTest();//testas
                 studentslinked = null;//nunulinami linked sarasai
                 upperlinked = null;
                 lowerlinked = null;
+                QueueTest();//testas
+                studentsqueue = null;//nunulinami queue sarasai
+                upperqueue = null;
+                lowerqueue = null;
             }
             else Forthversionmenu();
 
@@ -205,9 +209,43 @@ namespace Duomenu_laboratorinis
             }
             stoper.Stop();
             Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student>");
+        }
 
+        static private void QueueTest()
+        {
+            StreamReader sr = new StreamReader(testFile, Encoding.GetEncoding(1257));
+            sr.ReadLine();
+            String eilute;
+            Stopwatch stoper = new Stopwatch();
+            stoper.Start();
+            while ((eilute = sr.ReadLine()) != null)
+            {
+                eilute = Regex.Replace(eilute, @"\s+", " ");
+                String[] duomenys = eilute.Split(' ');
+                Student NewStudent = new Student(duomenys[0], duomenys[1]);
+                String homework = "";
+                for (int i = 2; i < duomenys.Length - 1; i++)
+                {
+                    homework += duomenys[i] + " ";
+                }
+                if (!homework.Equals("")) homework = homework.Substring(0, homework.Length - 1);
 
-
+                NewStudent.setHomework(homework);
+                NewStudent.setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
+                studentsqueue.Enqueue(NewStudent);
+            }
+            stoper.Stop();
+            sr.Close();
+            Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant Queue<Student>");
+            stoper.Restart();
+            // IEnumerable<Student> orderbyname = studentsqueue.OrderBy(p => p.getName());
+            foreach (Student studenchik in studentsqueue)//nerusiuoja pagal varda
+            {
+                if (studenchik.getEndmark() < 5.0f) lowerqueue.Enqueue(studenchik);
+                else upperqueue.Enqueue(studenchik);
+            }
+            stoper.Stop();
+            Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant Queue<Student>");
         }
         static private void readFile()
         {
