@@ -30,14 +30,17 @@ namespace Duomenu_laboratorinis
             if (input.Equals("t"))
             {
                 ListTest(); // testas
-                students = new List<Student>(); // nunulinami duomenys
-                upper = new List<Student>();
-                lower = new List<Student>();
-
+                students = null; // nunulinami sarasai
+                upper = null;
+                lower = null;
+                LinkedListTest();//testas
+                studentslinked = null;//nunulinami linked sarasai
+                upperlinked = null;
+                lowerlinked = null;
             }
             else Forthversionmenu();
-            
-            }
+
+        }
         static private void Forthversionmenu()
         {
             Console.WriteLine("Įveskite r jei norite duomenis vesti ranka arba f jei norite duomenis duoti iš failo");
@@ -78,25 +81,27 @@ namespace Duomenu_laboratorinis
         static private void randomFile()
         {
             Boolean checker = true;
-            while (checker) { 
-            try
+            while (checker)
             {
-                Console.WriteLine("Įrašykite kiek studentų norite sugeneruoti");
-                String line = System.Console.ReadLine();
-                int countas = Int32.Parse(line);
+                try
+                {
+                    Console.WriteLine("Įrašykite kiek studentų norite sugeneruoti");
+                    String line = System.Console.ReadLine();
+                    int countas = Int32.Parse(line);
                     Random rnd = new Random();
-                    for (int i = 1; i < countas+1 ;i++) {
-                        students.Add(new Student(i,rnd));
+                    for (int i = 1; i < countas + 1; i++)
+                    {
+                        students.Add(new Student(i, rnd));
 
                     }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Įvėdėte ne skaičių bandykite dar kartą");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Įvėdėte ne skaičių bandykite dar kartą");
                     continue;
-            }
+                }
                 checker = false;
-        }
+            }
         }
         static private void ListTest()
         {
@@ -131,13 +136,14 @@ namespace Duomenu_laboratorinis
                     }
                     stoper.Stop();
                     testFile = location;
+                    sr.Close();
                     Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student>");
                     stoper.Restart();
 
                     end = false;
 
-                    IEnumerable<Student> orderbyname = students.OrderBy(p => p.getName());
-                    foreach (Student studenchik in orderbyname)
+                   // IEnumerable<Student> orderbyname = students.OrderBy(p => p.getName());
+                    foreach (Student studenchik in students)//nerusiuoja pagal varda
                     {
                         if (studenchik.getEndmark() < 5.0f) lower.Add(studenchik);
                         else upper.Add(studenchik);
@@ -161,51 +167,94 @@ namespace Duomenu_laboratorinis
             }
 
         }
+        static private void LinkedListTest()
+        {
+
+            StreamReader sr = new StreamReader(testFile, Encoding.GetEncoding(1257));
+            sr.ReadLine();
+            String eilute;
+            Stopwatch stoper = new Stopwatch();
+            stoper.Start();
+            while ((eilute = sr.ReadLine()) != null)
+            {
+                eilute = Regex.Replace(eilute, @"\s+", " ");
+                String[] duomenys = eilute.Split(' ');
+                Student NewStudent = new Student(duomenys[0], duomenys[1]);
+                String homework = "";
+                for (int i = 2; i < duomenys.Length - 1; i++)
+                {
+                    homework += duomenys[i] + " ";
+                }
+                if (!homework.Equals("")) homework = homework.Substring(0, homework.Length - 1);
+
+                NewStudent.setHomework(homework);
+                NewStudent.setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
+                studentslinked.AddLast(NewStudent);
+            }
+            stoper.Stop();
+            sr.Close();
+            Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student>");
+            stoper.Restart();
+
+
+           // IEnumerable<Student> orderbyname = studentslinked.OrderBy(p => p.getName());
+            foreach (Student studenchik in studentslinked)//nerusiuoja pagal varda
+            {
+                if (studenchik.getEndmark() < 5.0f) lowerlinked.AddLast(studenchik);
+                else upperlinked.AddLast(studenchik);
+            }
+            stoper.Stop();
+            Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student>");
+
+
+
+        }
         static private void readFile()
         {
             Boolean end = true;
-            while (end) { 
+            while (end)
+            {
                 try
                 {
                     Console.WriteLine("Įrašykite pilną kelią iki failo ir jo pavadinimą.");
                     String location = System.Console.ReadLine();
                     StreamReader sr = new StreamReader(location, Encoding.GetEncoding(1257));
-                    
+
                     sr.ReadLine();
-                        String eilute;
-                        int counter = 0;
-                        while ((eilute = sr.ReadLine()) != null)
+                    String eilute;
+                    int counter = 0;
+                    while ((eilute = sr.ReadLine()) != null)
+                    {
+                        eilute = Regex.Replace(eilute, @"\s+", " ");
+                        String[] duomenys = eilute.Split(' ');
+                        students.Add(new Student(duomenys[0], duomenys[1]));
+                        String homework = "";
+                        for (int i = 2; i < duomenys.Length - 1; i++)
                         {
-                            eilute = Regex.Replace(eilute, @"\s+", " ");
-                            String[] duomenys = eilute.Split(' ');
-                            students.Add(new Student(duomenys[0], duomenys[1]));
-                            String homework = "";
-                            for (int i = 2; i < duomenys.Length - 1; i++)
-                            {
-                                homework += duomenys[i] + " ";
-                            }
-                            if (!homework.Equals("")) homework = homework.Substring(0, homework.Length - 1);
-                            students[counter].setHomework(homework);
-                            students[counter].setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
-                            counter++;
+                            homework += duomenys[i] + " ";
                         }
-                    
+                        if (!homework.Equals("")) homework = homework.Substring(0, homework.Length - 1);
+                        students[counter].setHomework(homework);
+                        students[counter].setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
+                        counter++;
+                    }
+
                     end = false;
                 }
                 catch (FileNotFoundException ex)
                 {
                     Console.WriteLine("Pasirinktas blogas failas bandykite dar karta.");
                 }
-                catch(ArgumentException ex)
+                catch (ArgumentException ex)
                 {
                     Console.WriteLine("Pasirinktas blogas kelias iki failo bandykite dar karta.");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Patikrinkite ar kelias iki failo yra teisingas ir bandykite dar karta.");
                 }
-                
-        }
+
+            }
         }
 
         static private void readKeyboard()
@@ -268,7 +317,8 @@ namespace Duomenu_laboratorinis
                     }
                     end = false;
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     Console.WriteLine("Blogai įrašėte įraša bandykite dar kartą.");
                 }
             }
@@ -276,7 +326,7 @@ namespace Duomenu_laboratorinis
 
         static private void printData()
         {
-           
+
             Console.WriteLine("{0,-15}{1,-15}{2,-10}{3,-10}", "Vardas", "Pavarde", "Galutinis (vid.)", "Galutinis (vid.)");
 
 
