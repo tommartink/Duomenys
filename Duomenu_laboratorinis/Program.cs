@@ -15,10 +15,31 @@ namespace Duomenu_laboratorinis
         static List<Student> students = new List<Student>();
         static List<Student> upper = new List<Student>();
         static List<Student> lower = new List<Student>();
+        static LinkedList<Student> studentslinked = new LinkedList<Student>();
+        static LinkedList<Student> upperlinked = new LinkedList<Student>();
+        static LinkedList<Student> lowerlinked = new LinkedList<Student>();
+        static Queue<Student> studentsqueue = new Queue<Student>();
+        static Queue<Student> upperqueue = new Queue<Student>();
+        static Queue<Student> lowerqueue = new Queue<Student>();
+        static String testFile;
         static void Main(string[] args)
         {
+            Console.WriteLine("Įveskite t jei norite išbandyti programos veikimo spartą");
+            Console.WriteLine("Įveskite bet ką kitą jei norite matyti kitus pasirinkimus");
+            String input = System.Console.ReadLine();
+            if (input.Equals("t"))
+            {
+                ListTest();
+                students = new List<Student>();
+                upper = new List<Student>();
+                lower = new List<Student>();
 
-
+            }
+            else Forthversionmenu();
+            
+            }
+        static private void Forthversionmenu()
+        {
             Console.WriteLine("Įveskite r jei norite duomenis vesti ranka arba f jei norite duomenis duoti iš failo");
             Console.WriteLine("Įveskite rf jei norite prirašytu random reiksmių į failą");
             String input = System.Console.ReadLine();
@@ -29,7 +50,8 @@ namespace Duomenu_laboratorinis
             {
                 readFile();
             }
-            if (input.Equals("r")) {
+            if (input.Equals("r"))
+            {
                 readKeyboard();
             }
             if (input.Equals("rf"))
@@ -39,20 +61,20 @@ namespace Duomenu_laboratorinis
                 timer.Start();
                 randomFile();
             }
-            if (input.Equals("f") || input.Equals("r")||input.Equals("rf"))
+            if (input.Equals("f") || input.Equals("r") || input.Equals("rf"))
             {
                 printData();
                 if (yesno)
                 {
                     FilePrinter print = new FilePrinter();
-                  //  print.generateFile(students);
-                    print.generateNamedFile(upper,"kietaiakiai");
-                    print.generateNamedFile(lower,"nuskriaustukai");
+                    //     print.generateFile(students);
+                    print.generateNamedFile(upper, "kietaiakiai");
+                    print.generateNamedFile(lower, "nuskriaustukai");
                     timer.Stop();
                     Console.WriteLine("Užduotis įvykdyta per: " + timer.ElapsedMilliseconds + "ms");
                 }
             }
-            }
+        }
         static private void randomFile()
         {
             Boolean checker = true;
@@ -76,6 +98,69 @@ namespace Duomenu_laboratorinis
                 checker = false;
         }
         }
+        static private void ListTest()
+        {
+            Boolean end = true;
+            while (end)
+            {
+                try
+                {
+                    Console.WriteLine("Įrašykite pilną kelią iki failo, kurį naudosite ir jo pavadinimą.");
+                    String location = System.Console.ReadLine();
+                    StreamReader sr = new StreamReader(location, Encoding.GetEncoding(1257));
+
+                    sr.ReadLine();
+                    String eilute;
+                    int counter = 0;
+                    Stopwatch stoper = new Stopwatch();
+                    stoper.Start();
+                    while ((eilute = sr.ReadLine()) != null)
+                    {
+                        eilute = Regex.Replace(eilute, @"\s+", " ");
+                        String[] duomenys = eilute.Split(' ');
+                        students.Add(new Student(duomenys[0], duomenys[1]));
+                        String homework = "";
+                        for (int i = 2; i < duomenys.Length - 1; i++)
+                        {
+                            homework += duomenys[i] + " ";
+                        }
+                        if (!homework.Equals("")) homework = homework.Substring(0, homework.Length - 1);
+                        students[counter].setHomework(homework);
+                        students[counter].setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
+                        counter++;
+                    }
+                    stoper.Stop();
+                    testFile = location;
+                    Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student>");
+                    stoper.Restart();
+
+                    end = false;
+
+                    IEnumerable<Student> orderbyname = students.OrderBy(p => p.getName());
+                    foreach (Student studenchik in orderbyname)
+                    {
+                        if (studenchik.getEndmark() < 5.0f) lower.Add(studenchik);
+                        else upper.Add(studenchik);
+                    }
+                    stoper.Stop();
+                    Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student>");
+                }
+                catch (FileNotFoundException ex)
+                {
+                    Console.WriteLine("Pasirinktas blogas failas bandykite dar karta.");
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine("Pasirinktas blogas kelias iki failo bandykite dar karta.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Patikrinkite ar kelias iki failo yra teisingas ir bandykite dar karta.");
+                }
+
+            }
+
+        }
         static private void readFile()
         {
             Boolean end = true;
@@ -85,6 +170,7 @@ namespace Duomenu_laboratorinis
                     Console.WriteLine("Įrašykite pilną kelią iki failo ir jo pavadinimą.");
                     String location = System.Console.ReadLine();
                     StreamReader sr = new StreamReader(location, Encoding.GetEncoding(1257));
+                    
                     sr.ReadLine();
                         String eilute;
                         int counter = 0;
@@ -190,12 +276,12 @@ namespace Duomenu_laboratorinis
 
         static private void printData()
         {
-            IEnumerable<Student> orderbyname = students.OrderBy(p => p.getName());
+           
             Console.WriteLine("{0,-15}{1,-15}{2,-10}{3,-10}", "Vardas", "Pavarde", "Galutinis (vid.)", "Galutinis (vid.)");
 
 
             Console.WriteLine("----------------------------------------------------------");
-
+            IEnumerable<Student> orderbyname = students.OrderBy(p => p.getName());
             foreach (Student studenchik in orderbyname)
             {
                 studenchik.WriteMyInfoAvg();
