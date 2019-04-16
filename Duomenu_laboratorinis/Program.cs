@@ -24,26 +24,40 @@ namespace Duomenu_laboratorinis
         static String testFile;
         static void Main(string[] args)
         {
+
+            Console.WriteLine("Įveskite t jei norite išbandyti programos 2 strategijų palyginimus");
+            Console.WriteLine("Įveskite bet ką kitą jei norite matyti kitus pasirinkimus");
+            String strat = System.Console.ReadLine();
+            if (strat.Equals("t"))
+            {
+                SpartosVeikimotestas(false);
+            }
+
             Console.WriteLine("Įveskite t jei norite išbandyti programos veikimo spartą");
             Console.WriteLine("Įveskite bet ką kitą jei norite matyti kitus pasirinkimus");
             String input = System.Console.ReadLine();
             if (input.Equals("t"))
             {
-                ListTest(); // testas
-                students = null; // nunulinami list sarasai
-                upper = null;
-                lower = null;
-                LinkedListTest();//testas
-                studentslinked = null;//nunulinami linked sarasai
-                upperlinked = null;
-                lowerlinked = null;
-                QueueTest();//testas
-                studentsqueue = null;//nunulinami queue sarasai
-                upperqueue = null;
-                lowerqueue = null;
+                SpartosVeikimotestas(true);
             }
             else Forthversionmenu();
 
+        }
+
+        static private void SpartosVeikimotestas(Boolean fifth)
+        {
+            ListTest(fifth); // testas
+            students = null; // nunulinami list sarasai
+            upper = null;
+            lower = null;
+            LinkedListTest(fifth);//testas
+            studentslinked = null;//nunulinami linked sarasai
+            upperlinked = null;
+            lowerlinked = null;
+            QueueTest(fifth);//testas
+            studentsqueue = null;//nunulinami queue sarasai
+            upperqueue = null;
+            lowerqueue = null;
         }
         static private void Forthversionmenu()
         {
@@ -107,7 +121,7 @@ namespace Duomenu_laboratorinis
                 checker = false;
             }
         }
-        static private void ListTest()
+        static private void ListTest(Boolean Fifthtest)
         {
             Boolean end = true;
             while (end)
@@ -122,7 +136,7 @@ namespace Duomenu_laboratorinis
                     String eilute;
                     int counter = 0;
                     Stopwatch stoper = new Stopwatch();
-                    stoper.Start();
+                   if(Fifthtest) stoper.Start();
                     while ((eilute = sr.ReadLine()) != null)
                     {
                         eilute = Regex.Replace(eilute, @"\s+", " ");
@@ -138,11 +152,12 @@ namespace Duomenu_laboratorinis
                         students[counter].setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
                         counter++;
                     }
-                    stoper.Stop();
+                    if (Fifthtest) stoper.Stop();
                     testFile = location;
                     sr.Close();
-                    Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student>");
-                    stoper.Restart();
+                    if (Fifthtest) Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student>");
+                    if (Fifthtest) stoper.Restart();
+                    else stoper.Start();
 
                     end = false;
 
@@ -153,7 +168,11 @@ namespace Duomenu_laboratorinis
                         else upper.Add(studenchik);
                     }
                     stoper.Stop();
-                    Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student>");
+                    if(Fifthtest) Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student>");
+                    else{
+                        Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student> pirma strategija");
+                        Console.WriteLine("Naudojant List<Student> pirma stategija atminties buvo užimta " + GC.GetTotalMemory(true) / 1024 + "kb");
+                    }
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -171,14 +190,14 @@ namespace Duomenu_laboratorinis
             }
 
         }
-        static private void LinkedListTest()
+        static private void LinkedListTest(Boolean Fifthtest)
         {
 
             StreamReader sr = new StreamReader(testFile, Encoding.GetEncoding(1257));
             sr.ReadLine();
             String eilute;
             Stopwatch stoper = new Stopwatch();
-            stoper.Start();
+           if(Fifthtest) stoper.Start();
             while ((eilute = sr.ReadLine()) != null)
             {
                 eilute = Regex.Replace(eilute, @"\s+", " ");
@@ -195,11 +214,11 @@ namespace Duomenu_laboratorinis
                 NewStudent.setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
                 studentslinked.AddLast(NewStudent);
             }
-            stoper.Stop();
+            if(Fifthtest) stoper.Stop();
             sr.Close();
-            Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student>");
-            stoper.Restart();
-
+            if(Fifthtest) Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student>");
+            if (Fifthtest) stoper.Restart();
+            else stoper.Start();
 
            // IEnumerable<Student> orderbyname = studentslinked.OrderBy(p => p.getName());
             foreach (Student studenchik in studentslinked)//nerusiuoja pagal varda
@@ -208,16 +227,20 @@ namespace Duomenu_laboratorinis
                 else upperlinked.AddLast(studenchik);
             }
             stoper.Stop();
-            Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student>");
+            if(Fifthtest)Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student>");
+            {
+                Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student> pirma strategija");
+                Console.WriteLine("Naudojant LinkedList<Student> pirma stategija atminties buvo užimta " + GC.GetTotalMemory(true) / 1024 + "kb");
+            }
         }
 
-        static private void QueueTest()
+        static private void QueueTest(Boolean FifthTest)
         {
             StreamReader sr = new StreamReader(testFile, Encoding.GetEncoding(1257));
             sr.ReadLine();
             String eilute;
             Stopwatch stoper = new Stopwatch();
-            stoper.Start();
+            if(FifthTest) stoper.Start();
             while ((eilute = sr.ReadLine()) != null)
             {
                 eilute = Regex.Replace(eilute, @"\s+", " ");
@@ -234,10 +257,11 @@ namespace Duomenu_laboratorinis
                 NewStudent.setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
                 studentsqueue.Enqueue(NewStudent);
             }
-            stoper.Stop();
+            if(FifthTest) stoper.Stop();
             sr.Close();
-            Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant Queue<Student>");
-            stoper.Restart();
+            if(FifthTest) Console.WriteLine("Studentų duomenys iš failo buvo nuskaityti per: " + stoper.ElapsedMilliseconds + "ms naudojant Queue<Student>");
+            if (FifthTest) stoper.Restart();
+            else stoper.Start();
             // IEnumerable<Student> orderbyname = studentsqueue.OrderBy(p => p.getName());
             foreach (Student studenchik in studentsqueue)//nerusiuoja pagal varda
             {
@@ -245,7 +269,13 @@ namespace Duomenu_laboratorinis
                 else upperqueue.Enqueue(studenchik);
             }
             stoper.Stop();
-            Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant Queue<Student>");
+            if(FifthTest)Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant Queue<Student>");
+            else
+            {
+                Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant Queue<Student> pirma strategija");
+                Console.WriteLine("Naudojant Queue<Student> pirma stategija atminties buvo užimta " + GC.GetTotalMemory(true)/1024 +"kb");
+            }
+
         }
         static private void readFile()
         {
