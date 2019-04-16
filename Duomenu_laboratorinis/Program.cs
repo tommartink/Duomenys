@@ -31,8 +31,8 @@ namespace Duomenu_laboratorinis
             if (strat.Equals("t"))
             {
                 SpartosVeikimotestas(false);
-              //  students = new List<Student>();
                 AntraStategijaTest();
+                listOptimizacija();
             }
 
             Console.WriteLine("Įveskite t jei norite išbandyti programos veikimo spartą");
@@ -43,6 +43,11 @@ namespace Duomenu_laboratorinis
                 SpartosVeikimotestas(true);
             }
             else Forthversionmenu();
+
+        }
+
+        static private void OptimizavimoTest()
+        {
 
         }
 
@@ -59,6 +64,7 @@ namespace Duomenu_laboratorinis
             studentsqueue.Clear();
             lowerqueue.Clear();
             upperqueue.Clear();
+            Console.WriteLine("----------------------------------------------------------------------------------");
         }
     static private void SpartosVeikimotestas(Boolean fifth)
         {
@@ -112,6 +118,7 @@ namespace Duomenu_laboratorinis
                 }
             }
         }
+
         static private void randomFile()
         {
             Boolean checker = true;
@@ -136,6 +143,41 @@ namespace Duomenu_laboratorinis
                 }
                 checker = false;
             }
+        }
+        static void listOptimizacija()
+        {
+
+            StreamReader sr = new StreamReader(testFile, Encoding.GetEncoding(1257));
+
+            sr.ReadLine();
+            String eilute;
+            int counter = 0;
+            Stopwatch stoper = new Stopwatch();
+            long firstTime = GC.GetTotalMemory(true) / 1024;
+            while ((eilute = sr.ReadLine()) != null)
+            {
+                eilute = Regex.Replace(eilute, @"\s+", " ");
+                String[] duomenys = eilute.Split(' ');
+                students.Add(new Student(duomenys[0], duomenys[1]));
+                String homework = "";
+                for (int i = 2; i < duomenys.Length - 1; i++)
+                {
+                    homework += duomenys[i] + " ";
+                }
+                if (!homework.Equals("")) homework = homework.Substring(0, homework.Length - 1);
+                students[counter].setHomework(homework);
+                students[counter].setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
+                counter++;
+            }
+            stoper.Start();
+            for(int i = 0; i < students.Count; i++)
+            {
+                if (students.ElementAt(i).getEgzam() < 5.0f) lower.Add(students.ElementAt(i));
+                else upper.Add(students.ElementAt(i));
+            }
+            stoper.Stop();
+            Console.WriteLine("Sąrašų skirstymo laikas su ElementAt komanda : " + stoper.ElapsedMilliseconds + " ms");
+      
         }
         static private void ListTest(Boolean Fifthtest)
         {
