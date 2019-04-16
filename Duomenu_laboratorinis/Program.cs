@@ -52,17 +52,21 @@ namespace Duomenu_laboratorinis
             ListTestSecond();
             students.Clear();
             lower.Clear();
+            LinkedListTestSecond();
+            studentslinked.Clear();
+            lowerlinked.Clear();
+    
         }
-        static private void SpartosVeikimotestas(Boolean fifth)
+    static private void SpartosVeikimotestas(Boolean fifth)
         {
             ListTest(fifth); // testas
             students.Clear(); // nunulinami list sarasai
             upper.Clear();
             lower.Clear();
             LinkedListTest(fifth);//testas
-            studentslinked = new LinkedList<Student>();//nunulinami linked sarasai
-            upperlinked = new LinkedList<Student>();
-            lowerlinked = new LinkedList<Student>();
+            studentslinked.Clear();
+            lowerlinked.Clear();
+            lowerlinked.Clear();
             QueueTest(fifth);//testas
             studentsqueue = new Queue<Student>();//nunulinami queue sarasai
             upperqueue = new Queue<Student>();
@@ -317,6 +321,7 @@ namespace Duomenu_laboratorinis
                     stoper.Start();
 
             // IEnumerable<Student> orderbyname = students.OrderBy(p => p.getName());
+
             for (int i = students.Count - 1; i >= 0; i--)
             {
                 if (students[i].getEndmark() < 5.0f)
@@ -325,11 +330,57 @@ namespace Duomenu_laboratorinis
                     students.RemoveAt(i);
                 }
             }
-                    stoper.Stop();
+
+            stoper.Stop();
                     Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant List<Student> antrą strategija");
                     Console.WriteLine("Naudojant List<Student> antrą stategija atminties buvo užimta " + (GC.GetTotalMemory(true) / 1024 -firstTime) + "kb");
                     
               
+
+        }
+        static private void LinkedListTestSecond()
+        {
+            StreamReader sr = new StreamReader(testFile, Encoding.GetEncoding(1257));
+            sr.ReadLine();
+            String eilute;
+            int counter = 0;
+            Stopwatch stoper = new Stopwatch();
+            long firstTime = GC.GetTotalMemory(true) / 1024;
+            while ((eilute = sr.ReadLine()) != null)
+            {
+                eilute = Regex.Replace(eilute, @"\s+", " ");
+                String[] duomenys = eilute.Split(' ');
+                Student NewStudent = new Student(duomenys[0], duomenys[1]);
+                String homework = "";
+                for (int i = 2; i < duomenys.Length - 1; i++)
+                {
+                    homework += duomenys[i] + " ";
+                }
+                if (!homework.Equals("")) homework = homework.Substring(0, homework.Length - 1);
+
+                NewStudent.setHomework(homework);
+                NewStudent.setEgzam(Double.Parse(duomenys[duomenys.Length - 1]));
+                studentslinked.AddLast(NewStudent);
+            }
+
+            sr.Close();
+            stoper.Start();
+
+            // IEnumerable<Student> orderbyname = students.OrderBy(p => p.getName());
+
+            for (int i = studentslinked.Count - 1; i >= 0; i--)
+            {
+                if (studentslinked.ElementAt(i).getEndmark() < 5.0f)
+                {
+                    lowerlinked.AddLast(studentslinked.ElementAt(i));
+                    studentslinked.Remove(studentslinked.ElementAt(i));
+                }
+            }
+            stoper.Stop();
+            Console.WriteLine("Studentai buvo išdalinti per: " + stoper.ElapsedMilliseconds + "ms naudojant LinkedList<Student> antrą strategija");
+            Console.WriteLine("Naudojant LinkedList<Student> antrą stategija atminties buvo užimta " + (GC.GetTotalMemory(true) / 1024 - firstTime) + "kb");
+
+
 
         }
         static private void readFile()
